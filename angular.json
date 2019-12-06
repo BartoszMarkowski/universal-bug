@@ -1,0 +1,192 @@
+{
+  "version": 1,
+  "projects": {
+    "website-server": {
+      "root": "apps/website-server",
+      "sourceRoot": "apps/website-server/src",
+      "projectType": "application",
+      "prefix": "website-server",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/website-server",
+            "main": "apps/website-server/src/main.ts",
+            "tsConfig": "apps/website-server/tsconfig.app.json",
+            "assets": [
+              "apps/website-server/src/assets"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": false,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/website-server/src/environments/environment.ts",
+                  "with": "apps/website-server/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "website-server:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/website-server/tsconfig.app.json",
+              "apps/website-server/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/website-server/**"
+            ]
+          }
+        }
+      }
+    },
+    "template-example": {
+      "projectType": "application",
+      "schematics": {
+        "@nrwl/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "apps/template/example",
+      "sourceRoot": "apps/template/example/src",
+      "prefix": "frontend",
+      "architect": {
+        "build-web": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/template/example",
+            "index": "apps/template/example/src/index.html",
+            "main": "apps/template/example/src/main.ts",
+            "polyfills": "apps/template/example/src/polyfills.ts",
+            "tsConfig": "apps/template/example/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "apps/template/example/src/favicon.ico",
+              "apps/template/example/src/assets"
+            ],
+            "styles": [
+              "apps/template/example/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/template/environments/environment.ts",
+                  "with": "apps/template/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "template-example:build-web"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "template-example:build:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/template/example/tsconfig.app.json",
+              "apps/template/example/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/template/example/**"
+            ]
+          }
+        },
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "optimization": true,
+            "outputPath": "dist/apps/template/example-server",
+            "main": "apps/template/example/src/main.server.ts",
+            "tsConfig": "apps/template/example/tsconfig.server.json"
+          }
+        },
+        "build": {
+          "builder": "@angular-devkit/architect:concat",
+          "options": {
+            "targets": [
+              {
+                "target": "template-example:build-web"
+              },
+              {
+                "target": "template-example:server"
+              }
+            ]
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/angular"
+  },
+  "schematics": {
+    "@nrwl/angular:application": {
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {
+      "styleext": "scss"
+    }
+  },
+  "defaultProject": "website-server"
+}
